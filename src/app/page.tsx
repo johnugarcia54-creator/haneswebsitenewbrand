@@ -1,79 +1,25 @@
 import Link from "next/link";
-import { Button, Card, Eyebrow, Pill, Section } from "@/components/ui";
+import { Button, Card, Eyebrow, Section } from "@/components/ui";
 import { Reveal, RevealGroup, RevealItem } from "@/components/reveal";
 import { Counter } from "@/components/counter";
 import { BrandStack } from "@/components/brand-stack";
+import { ShipHero } from "@/components/ship-hero";
 import { CARRIERS, CERTIFICATIONS, OFFICES, PROCESS_STEPS, STATS } from "@/lib/data";
-import { LiveFeed } from "@/components/motion-image";
 
 export default function Home() {
   return (
     <>
-      {/* HERO */}
-      <section className="relative pt-40 pb-20 md:pt-52 md:pb-28 overflow-hidden text-center">
-        <div
-          className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[560px] w-[900px] rounded-full opacity-40 blur-3xl"
-          style={{ background: "radial-gradient(circle, #ff8a9c 0%, #ffd9c2 45%, transparent 70%)" }}
-          aria-hidden="true"
-        />
-        <div className="container-page relative">
-          <Reveal>
-            <Pill>Live across Christchurch · Hong Kong · Zhangzhou</Pill>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <h1 className="font-display mt-6 text-[clamp(3rem,9vw,7.5rem)] font-semibold leading-[0.98] tracking-display-lg text-balance">
-              Supply chains.
-              <br />
-              <span className="text-accent">Made effortless.</span>
-            </h1>
-          </Reveal>
-          <Reveal delay={0.16}>
-            <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-ink-muted leading-relaxed">
-              One partner from sourcing to site — smarter procurement, coordinated warehousing,
-              and dependable delivery for New Zealand&apos;s builders.
-            </p>
-          </Reveal>
-          <Reveal delay={0.24}>
-            <div className="mt-9 flex flex-wrap justify-center gap-4">
-              <Button href="/contact">Talk to our team</Button>
-              <Button href="/brands" variant="ghost">
-                Explore our brands
-              </Button>
-            </div>
-          </Reveal>
-        </div>
+      <ShipHero />
 
-        <div className="container-page mt-14 grid sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
-          <Reveal delay={0.3}>
-            <LiveFeed
-              image="/images/journey-02-shenzhen.jpg"
-              label="Ocean freight — Shenzhen"
-              mode="parallax"
-              eta="ETA 22–28 days"
-            />
-          </Reveal>
-          <Reveal delay={0.4}>
-            <LiveFeed
-              image="/images/journey-01-manufacturing.jpg"
-              label="Manufacturing — Origin China"
-              mode="scan"
-              eta="QC in progress"
-            />
-          </Reveal>
+      <div className="border-y border-line py-4 overflow-hidden bg-canvas">
+        <div className="flex whitespace-nowrap animate-[marquee_28s_linear_infinite]">
+          {[...CARRIERS, ...CERTIFICATIONS, ...CARRIERS, ...CERTIFICATIONS].map((item, i) => (
+            <span key={i} className="mx-6 text-sm font-medium text-ink-faint">
+              {item}
+            </span>
+          ))}
         </div>
-
-        <Reveal delay={0.32}>
-          <div className="mt-20 border-y border-line py-4 overflow-hidden">
-            <div className="flex whitespace-nowrap animate-[marquee_28s_linear_infinite]">
-              {[...CARRIERS, ...CERTIFICATIONS, ...CARRIERS, ...CERTIFICATIONS].map((item, i) => (
-                <span key={i} className="mx-6 text-sm font-medium text-ink-faint">
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        </Reveal>
-      </section>
+      </div>
 
       {/* BRAND STACK */}
       <section className="pt-8 pb-16">
