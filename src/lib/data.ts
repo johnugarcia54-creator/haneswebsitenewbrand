@@ -36,6 +36,7 @@ export type Brand = {
   description: string;
   index: string;
   accent: string;
+  image: string;
 };
 
 export const BRANDS: Brand[] = [
@@ -48,6 +49,7 @@ export const BRANDS: Brand[] = [
       "Precision-sourced structural steel built for New Zealand's construction demands — simplicity and strength in every section.",
     index: "01",
     accent: "#e0173a",
+    image: "/images/brand-hanesteel.jpg",
   },
   {
     slug: "hanewood",
@@ -58,6 +60,7 @@ export const BRANDS: Brand[] = [
       "H3.2 treated, structural, and non-structural timber built to last in New Zealand conditions.",
     index: "02",
     accent: "#b5651d",
+    image: "/images/brand-hanewood.jpg",
   },
   {
     slug: "hanesulation",
@@ -68,6 +71,7 @@ export const BRANDS: Brand[] = [
       "Insulating spaces and delivering value — Hanesulation protects homes with superior thermal performance.",
     index: "03",
     accent: "#0071e3",
+    image: "/images/brand-hanesulation.jpg",
   },
   {
     slug: "hanestone",
@@ -78,6 +82,7 @@ export const BRANDS: Brand[] = [
       "Stone and masonry products engineered for a solid foundation, built to stand the test of time.",
     index: "04",
     accent: "#6e6e73",
+    image: "/images/brand-hanestone.jpg",
   },
   {
     slug: "bargain-hub",
@@ -88,6 +93,7 @@ export const BRANDS: Brand[] = [
       "A home for quality everyday essentials — comfort, function, and style at prices that make sense.",
     index: "05",
     accent: "#1c8a4b",
+    image: "/images/brand-bargainhub.jpg",
   },
 ];
 
@@ -99,7 +105,7 @@ export const OFFICES = [
     label: "China Branch · Fujian",
     address: "301/13 Huayuan, Yan'an Square, Zhangzhou, Fujian, China",
     coords: "24.5130° N, 117.6470° E",
-    photo: "hnb-office-zhangzhou",
+    photo: "/images/journey-01-manufacturing.jpg",
   },
   {
     key: "hongkong",
@@ -108,7 +114,7 @@ export const OFFICES = [
     label: "Asia Branch",
     address: "Suite C / Level 7 & 19, World Trust Tower, 50 Stanley Street, Central, Hong Kong SAR",
     coords: "22.3193° N, 114.1694° E",
-    photo: "hnb-office-hongkong",
+    photo: "/images/journey-02-shenzhen.jpg",
   },
   {
     key: "christchurch",
@@ -117,7 +123,7 @@ export const OFFICES = [
     label: "Head Office · New Zealand",
     address: "93 Main South Road, Hornby, Christchurch. Warehouse: 44 Anchorage Road, Hornby — 20 min from the Port of Lyttelton.",
     coords: "43.5321° S, 172.6362° E",
-    photo: "hnb-office-christchurch",
+    photo: "/images/warehouse-racking.jpg",
   },
 ];
 

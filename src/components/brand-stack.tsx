@@ -23,7 +23,7 @@ function StackCard({ brand, index }: { brand: Brand; index: number }) {
         className="h-[calc(100vh-3.5rem)] rounded-[32px] overflow-hidden relative flex items-end mb-6 origin-top"
       >
         <img
-          src={`https://picsum.photos/seed/hnb-brand-${brand.slug}/1600/1200`}
+          src={brand.image}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover opacity-60"

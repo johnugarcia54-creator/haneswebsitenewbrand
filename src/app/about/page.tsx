@@ -64,7 +64,7 @@ export default function AboutPage() {
               <Card className="overflow-hidden h-full">
                 <div className="relative h-48">
                   <img
-                    src={`https://picsum.photos/seed/${office.photo}/500/360`}
+                    src={office.photo}
                     alt=""
                     aria-hidden="true"
                     className="absolute inset-0 h-full w-full object-cover"

@@ -22,7 +22,7 @@ export default function BrandsPage() {
                 <Card className="overflow-hidden group h-full">
                   <div className="relative h-56 overflow-hidden">
                     <img
-                      src={`https://picsum.photos/seed/hnb-brand-${brand.slug}/700/500`}
+                      src={brand.image}
                       alt=""
                       aria-hidden="true"
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"

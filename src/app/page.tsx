@@ -4,6 +4,7 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/reveal";
 import { Counter } from "@/components/counter";
 import { BrandStack } from "@/components/brand-stack";
 import { CARRIERS, CERTIFICATIONS, OFFICES, PROCESS_STEPS, STATS } from "@/lib/data";
+import { LiveFeed } from "@/components/motion-image";
 
 export default function Home() {
   return (
@@ -39,6 +40,25 @@ export default function Home() {
                 Explore our brands
               </Button>
             </div>
+          </Reveal>
+        </div>
+
+        <div className="container-page mt-14 grid sm:grid-cols-2 gap-5 max-w-3xl mx-auto">
+          <Reveal delay={0.3}>
+            <LiveFeed
+              image="/images/journey-02-shenzhen.jpg"
+              label="Ocean freight — Shenzhen"
+              mode="parallax"
+              eta="ETA 22–28 days"
+            />
+          </Reveal>
+          <Reveal delay={0.4}>
+            <LiveFeed
+              image="/images/journey-01-manufacturing.jpg"
+              label="Manufacturing — Origin China"
+              mode="scan"
+              eta="QC in progress"
+            />
           </Reveal>
         </div>
 
@@ -135,7 +155,7 @@ export default function Home() {
               <Card className="overflow-hidden h-full">
                 <div className="relative h-48">
                   <img
-                    src={`https://picsum.photos/seed/${office.photo}/500/360`}
+                    src={office.photo}
                     alt=""
                     aria-hidden="true"
                     className="absolute inset-0 h-full w-full object-cover"

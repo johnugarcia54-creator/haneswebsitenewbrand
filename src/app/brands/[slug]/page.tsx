@@ -23,7 +23,7 @@ export default async function BrandDetailPage(props: PageProps<"/brands/[slug]">
     <>
       <div className="relative pt-40 pb-24 md:pt-48 md:pb-32 overflow-hidden bg-dark text-white">
         <img
-          src={`https://picsum.photos/seed/hnb-brand-${brand.slug}/1800/1000`}
+          src={brand.image}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover opacity-50"
