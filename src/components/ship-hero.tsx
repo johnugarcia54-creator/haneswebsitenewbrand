@@ -29,7 +29,7 @@ export function ShipHero() {
           className="max-w-2xl"
         >
           <Pill dark>Live across Christchurch · Hong Kong · Zhangzhou</Pill>
-          <h1 className="font-display italic mt-6 text-[clamp(2.75rem,6.5vw,5.25rem)] font-normal leading-[1.05] tracking-display text-balance text-white">
+          <h1 className="font-display mt-6 text-[clamp(2.75rem,6.5vw,5.25rem)] font-semibold leading-[1.02] tracking-display-lg text-balance text-white">
             Supply chains,
             <br />
             refined.
