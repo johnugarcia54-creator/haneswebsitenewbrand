@@ -1,18 +1,21 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export function ParallaxImage({ src, className }: { src: string; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const x = useTransform(scrollYProgress, [0, 1], ["-14%", "14%"]);
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.3, 1.18, 1.3]);
+
   return (
-    <div className={className}>
+    <div ref={ref} className={className}>
       <motion.img
         src={src}
         alt=""
         aria-hidden="true"
-        initial={{ x: "-4%" }}
-        animate={{ x: ["-4%", "4%", "-4%"] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        style={{ scale: 1.18 }}
+        style={{ x, scale }}
         className="absolute inset-0 h-full w-full object-cover"
       />
     </div>
@@ -20,18 +23,21 @@ export function ParallaxImage({ src, className }: { src: string; className?: str
 }
 
 export function ScanlineImage({ src, className }: { src: string; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const sweepX = useTransform(scrollYProgress, [0, 1], ["-120%", "220%"]);
+
   return (
-    <div className={className}>
+    <div ref={ref} className={className}>
       <img src={src} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover" />
       <motion.div
         aria-hidden="true"
         className="absolute inset-y-0 w-1/3 pointer-events-none"
         style={{
+          x: sweepX,
           background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent)",
           mixBlendMode: "overlay",
         }}
-        animate={{ x: ["-120%", "220%"] }}
-        transition={{ duration: 3.2, repeat: Infinity, repeatDelay: 1.4, ease: "easeInOut" }}
       />
     </div>
   );
@@ -54,7 +60,7 @@ export function LiveFeed({
         {mode === "parallax" ? (
           <ParallaxImage src={image} className="absolute inset-0 overflow-hidden" />
         ) : (
-          <ScanlineImage src={image} className="absolute inset-0" />
+          <ScanlineImage src={image} className="absolute inset-0 overflow-hidden" />
         )}
       </div>
       <div className="flex items-center justify-between px-4 py-3">
