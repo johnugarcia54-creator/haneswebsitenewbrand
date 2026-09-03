@@ -1,68 +1,110 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useMemo, useRef } from "react";
 import Link from "next/link";
 import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import { Pill } from "@/components/ui";
 
+const STAGES = [
+  {
+    image: "/images/journey-01-manufacturing.jpg",
+    kicker: "Origin — China",
+    title: "Vetted at the source.",
+    detail: "Every factory independently checked before a single order is placed.",
+  },
+  {
+    image: "/images/journey-02-shenzhen.jpg",
+    kicker: "Ocean Freight",
+    title: "22–28 days at sea.",
+    detail: "Containerised and tracked from the Port of Shenzhen to New Zealand.",
+  },
+  {
+    image: "/images/warehouse-yard.jpg",
+    kicker: "Port of Lyttelton",
+    title: "Cleared and devanned.",
+    detail: "Real Hornby yard — containers received, customs cleared, staged for transport.",
+  },
+  {
+    image: "/images/warehouse-racking.jpg",
+    kicker: "Hornby Warehouse",
+    title: "Staged, not stacked.",
+    detail: "Our actual Hornby facility — held and organised until your site is ready.",
+  },
+  {
+    image: "/images/journey-05-site-delivery.jpg",
+    kicker: "Site Delivery",
+    title: "Straight to the build.",
+    detail: "Coordinated nationwide delivery, timed to your project's programme.",
+  },
+] as const;
+
+const STAGE_COUNT = STAGES.length;
+
 export function ShipHero() {
   const ref = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const captionRef = useRef<HTMLDivElement>(null);
+  const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
+  const textRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const dotRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const introOpacity = useTransform(scrollYProgress, [0, 0.04], [1, 0]);
+  const introY = useTransform(scrollYProgress, [0, 0.06], [0, -40]);
 
-  const imageScale = useTransform(scrollYProgress, [0, 0.6, 1], [1.45, 1.05, 1.15]);
-  const imageX = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
-  const textY = useTransform(scrollYProgress, [0, 0.22], [0, -60]);
-  const captionY = useTransform(scrollYProgress, [0.55, 0.75], [40, 0]);
-
-  // Opacity + filter driven imperatively — this framer-motion build does not
-  // reliably re-apply `opacity`/`filter` written via the declarative `style`
-  // prop when sourced from a scroll-linked MotionValue (verified with
-  // Playwright: transform updates on scroll, opacity never leaves its
-  // initial value). Setting it directly on the node sidesteps that.
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const overlayOpacity = 0.72 - Math.min(v, 0.35) / 0.35 * 0.54;
-    const gray = v >= 0.5 ? 0 : 1 - v / 0.5;
-    const textOpacity = v >= 0.22 ? 0 : 1 - v / 0.22;
-    let captionOpacity = 0;
-    if (v >= 0.95) captionOpacity = 1;
-    else if (v >= 0.75) captionOpacity = 1;
-    else if (v >= 0.55) captionOpacity = (v - 0.55) / 0.2;
-
-    if (imageRef.current) imageRef.current.style.filter = `grayscale(${gray})`;
-    if (overlayRef.current) overlayRef.current.style.opacity = String(overlayOpacity);
-    if (textRef.current) textRef.current.style.opacity = String(textOpacity);
-    if (captionRef.current) captionRef.current.style.opacity = String(captionOpacity);
-  });
-
-  useEffect(() => {
-    // Apply initial values on mount (v=0 case), matching the logic above.
-    if (imageRef.current) imageRef.current.style.filter = "grayscale(1)";
-    if (overlayRef.current) overlayRef.current.style.opacity = "0.72";
-    if (textRef.current) textRef.current.style.opacity = "1";
-    if (captionRef.current) captionRef.current.style.opacity = "0";
+  const bounds = useMemo(() => {
+    // stage i owns roughly [i/N, (i+1)/N] of progress, with soft cross-fade edges
+    const step = 1 / STAGE_COUNT;
+    const fade = step * 0.35;
+    return STAGES.map((_, i) => ({
+      inStart: Math.max(0, i * step - fade),
+      inEnd: i * step + fade,
+      outStart: (i + 1) * step - fade,
+      outEnd: Math.min(1, (i + 1) * step + fade),
+    }));
   }, []);
 
+  function opacityFor(i: number, v: number) {
+    if (i === 0 && v <= bounds[0].inEnd) return 1;
+    const b = bounds[i];
+    if (v < b.inStart) return 0;
+    if (v < b.inEnd) return (v - b.inStart) / (b.inEnd - b.inStart);
+    if (v < b.outStart) return 1;
+    if (v < b.outEnd) return 1 - (v - b.outStart) / (b.outEnd - b.outStart);
+    return 0;
+  }
+
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    STAGES.forEach((_, i) => {
+      const o = opacityFor(i, v);
+      const img = imageRefs.current[i];
+      const text = textRefs.current[i];
+      const dot = dotRefs.current[i];
+      if (img) img.style.opacity = String(o);
+      if (text) text.style.opacity = String(o);
+      if (dot) dot.style.opacity = o > 0.4 ? "1" : "0.3";
+      if (dot) dot.style.width = o > 0.4 ? "24px" : "6px";
+    });
+  });
+
   return (
-    <div ref={ref} className="relative h-[260vh]">
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <motion.img
-          ref={imageRef}
-          src="/images/journey-02-shenzhen.jpg"
-          alt=""
-          aria-hidden="true"
-          style={{ scale: imageScale, x: imageX }}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div ref={overlayRef} className="absolute inset-0 bg-black" aria-hidden="true" />
+    <div ref={ref} className="relative" style={{ height: `${STAGE_COUNT * 140}vh` }}>
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
+        {STAGES.map((stage, i) => (
+          <img
+            key={stage.image}
+            ref={(el) => {
+              imageRefs.current[i] = el;
+            }}
+            src={stage.image}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{ opacity: i === 0 ? 1 : 0 }}
+          />
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/50" aria-hidden="true" />
 
         <motion.div
-          ref={textRef}
-          style={{ y: textY }}
+          style={{ opacity: introOpacity, y: introY }}
           className="relative h-full flex flex-col items-center justify-center text-center px-6"
         >
           <Pill dark>Live across Christchurch · Hong Kong · Zhangzhou</Pill>
@@ -91,24 +133,41 @@ export function ShipHero() {
           </div>
         </motion.div>
 
-        <motion.div
-          ref={captionRef}
-          style={{ y: captionY }}
-          className="absolute inset-x-0 bottom-16 flex flex-col items-center text-center px-6"
-        >
-          <div className="flex items-center gap-2 text-white/70 text-sm font-medium">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#34c759] opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#34c759]" />
-            </span>
-            Ocean Freight — Shenzhen to Lyttelton
+        {STAGES.map((stage, i) => (
+          <div
+            key={stage.image}
+            ref={(el) => {
+              textRefs.current[i] = el;
+            }}
+            className="absolute inset-x-0 bottom-20 flex flex-col items-center text-center px-6 pointer-events-none"
+            style={{ opacity: 0 }}
+          >
+            <div className="flex items-center gap-2 text-white/70 text-sm font-medium">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#34c759] opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#34c759]" />
+              </span>
+              {stage.kicker}
+            </div>
+            <div className="font-display mt-3 text-3xl md:text-5xl font-semibold text-white tracking-display-lg">
+              {stage.title}
+            </div>
+            <p className="mt-3 max-w-md text-white/70">{stage.detail}</p>
           </div>
-          <div className="font-display mt-3 text-3xl md:text-5xl font-semibold text-white tracking-display-lg">
-            22–28 days.
-            <br />
-            One coordinated crossing.
-          </div>
-        </motion.div>
+        ))}
+
+        <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-2">
+          {STAGES.map((stage, i) => (
+            <span
+              key={stage.image}
+              ref={(el) => {
+                dotRefs.current[i] = el;
+              }}
+              className="block h-1.5 rounded-full bg-white transition-[width] duration-300"
+              style={{ width: i === 0 ? "24px" : "6px", opacity: i === 0 ? 1 : 0.3 }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
